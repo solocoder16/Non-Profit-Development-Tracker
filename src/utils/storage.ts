@@ -917,10 +917,18 @@ export function getStoredVolunteers(): VolunteerProfile[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.VOLUNTEERS);
     if (!raw) {
-      localStorage.setItem(STORAGE_KEYS.VOLUNTEERS, JSON.stringify(INITIAL_VOLUNTEERS));
+      saveStoredVolunteers(INITIAL_VOLUNTEERS);
       return INITIAL_VOLUNTEERS;
     }
-    return JSON.parse(raw);
+
+    if (raw.startsWith(CHILDREN_ENC_PREFIX)) {
+      return decryptPayload<VolunteerProfile[]>(raw, CHILDREN_PASSPHRASE) || INITIAL_VOLUNTEERS;
+    }
+
+    // Backward compatibility for legacy cleartext records; migrate immediately.
+    const legacy = JSON.parse(raw) as VolunteerProfile[];
+    saveStoredVolunteers(legacy);
+    return legacy;
   } catch (err) {
     console.error('Failed reading volunteers data:', err);
     return INITIAL_VOLUNTEERS;
@@ -929,7 +937,8 @@ export function getStoredVolunteers(): VolunteerProfile[] {
 
 export function saveStoredVolunteers(volunteers: VolunteerProfile[]): void {
   try {
-    localStorage.setItem(STORAGE_KEYS.VOLUNTEERS, JSON.stringify(volunteers));
+    const encrypted = encryptPayload(volunteers, CHILDREN_PASSPHRASE);
+    localStorage.setItem(STORAGE_KEYS.VOLUNTEERS, encrypted);
     triggerServerSync();
   } catch (err) {
     console.error('Failed saving volunteers data:', err);
