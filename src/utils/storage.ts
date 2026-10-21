@@ -9,6 +9,66 @@ import {
   VolunteerProfile,
 } from '../types';
 
+const CHILDREN_ENC_PREFIX = 'enc:v1:';
+const CHILDREN_PASSPHRASE = 'childlink-local-storage-protection-v1';
+
+async function deriveChildrenKey(): Promise<CryptoKey> {
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw',
+    enc.encode(CHILDREN_PASSPHRASE),
+    'PBKDF2',
+    false,
+    ['deriveKey']
+  );
+  return crypto.subtle.deriveKey(
+    {
+      name: 'PBKDF2',
+      salt: enc.encode('childlink-children-salt'),
+      iterations: 100000,
+      hash: 'SHA-256',
+    },
+    keyMaterial,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt', 'decrypt']
+  );
+}
+
+function bytesToBase64(bytes: Uint8Array): string {
+  let binary = '';
+  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+  return btoa(binary);
+}
+
+function base64ToBytes(base64: string): Uint8Array {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes;
+}
+
+async function encryptChildrenPayload(children: ChildBeneficiary[]): Promise<string> {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const key = await deriveChildrenKey();
+  const plaintext = new TextEncoder().encode(JSON.stringify(children));
+  const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plaintext);
+  const packed = new Uint8Array(iv.length + new Uint8Array(ciphertext).length);
+  packed.set(iv, 0);
+  packed.set(new Uint8Array(ciphertext), iv.length);
+  return `${CHILDREN_ENC_PREFIX}${bytesToBase64(packed)}`;
+}
+
+async function decryptChildrenPayload(raw: string): Promise<ChildBeneficiary[]> {
+  const base64 = raw.slice(CHILDREN_ENC_PREFIX.length);
+  const packed = base64ToBytes(base64);
+  const iv = packed.slice(0, 12);
+  const ciphertext = packed.slice(12);
+  const key = await deriveChildrenKey();
+  const plaintext = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext);
+  return JSON.parse(new TextDecoder().decode(plaintext));
+}
+
 export const DEFAULT_COMMUNITIES: string[] = [
   'Brgy. Langkiwa, Binan, Laguna',
   'Towerville, San Jose Del Monte Bulacan',
@@ -560,23 +620,33 @@ const INITIAL_SECURITY: SecuritySettings = {
 };
 
 // Storage helper functions
-export function getStoredChildren(): ChildBeneficiary[] {
+export async function getStoredChildren(): Promise<ChildBeneficiary[]> {
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.CHILDREN);
     if (!raw) {
-      localStorage.setItem(STORAGE_KEYS.CHILDREN, JSON.stringify(INITIAL_CHILDREN));
+      const encryptedInitial = await encryptChildrenPayload(INITIAL_CHILDREN);
+      localStorage.setItem(STORAGE_KEYS.CHILDREN, encryptedInitial);
       return INITIAL_CHILDREN;
     }
-    return JSON.parse(raw);
+
+    if (raw.startsWith(CHILDREN_ENC_PREFIX)) {
+      return await decryptChildrenPayload(raw);
+    }
+
+    const parsed = JSON.parse(raw) as ChildBeneficiary[];
+    const migrated = await encryptChildrenPayload(parsed);
+    localStorage.setItem(STORAGE_KEYS.CHILDREN, migrated);
+    return parsed;
   } catch (err) {
     console.error('Failed reading children data from localStorage:', err);
     return INITIAL_CHILDREN;
   }
 }
 
-export function saveStoredChildren(children: ChildBeneficiary[]): void {
+export async function saveStoredChildren(children: ChildBeneficiary[]): Promise<void> {
   try {
-    localStorage.setItem(STORAGE_KEYS.CHILDREN, JSON.stringify(children));
+    const encrypted = await encryptChildrenPayload(children);
+    localStorage.setItem(STORAGE_KEYS.CHILDREN, encrypted);
     triggerServerSync();
   } catch (err) {
     console.error('Failed saving children data:', err);
