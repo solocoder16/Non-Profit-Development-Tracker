@@ -79,9 +79,15 @@ export function sanitizeImageUrl(input: string): string {
 
   const lower = trimmed.toLowerCase();
 
-  // Keep already-validated raster data URLs as-is
+  // Canonicalize validated raster data URLs to avoid returning raw user input directly
   if (lower.startsWith('data:')) {
-    return trimmed;
+    const dataMatch = trimmed.match(/^data:image\/(jpeg|png|webp|gif|jpg);base64,([a-zA-Z0-9+/=]+)$/i);
+    if (!dataMatch) {
+      return '';
+    }
+    const imageType = dataMatch[1].toLowerCase();
+    const base64Payload = dataMatch[2];
+    return `data:image/${imageType};base64,${base64Payload}`;
   }
 
   // Normalize safe relative URLs and reject suspicious characters
