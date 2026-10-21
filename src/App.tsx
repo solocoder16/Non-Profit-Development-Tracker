@@ -240,7 +240,7 @@ export default function App() {
     }
 
     setChildren(updated);
-    saveStoredChildren(updated);
+    void saveStoredChildren(updated);
     setChildToEdit(null);
   };
 
@@ -249,7 +249,7 @@ export default function App() {
     if (!target) return;
     const updated = children.filter((c) => c.id !== id);
     setChildren(updated);
-    saveStoredChildren(updated);
+    void saveStoredChildren(updated);
     handleLogAudit('delete_child', `Deleted beneficiary record for ${target.beneficiaryName}`);
   };
 
