@@ -1,0 +1,8 @@
+{
+  "name": "Vineyard ChildLink & Humanitarian Tracker",
+  "description": "Secure, offline-first non-profit management system for ChildLink sponsorship masterlists and CVA & Education in Emergencies community field reports.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

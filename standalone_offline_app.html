@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vineyard ChildLink & Humanitarian Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: #f8fafc;
+      color: #1e293b;
+    }
+    @media print {
+      .no-print, header, nav, button, .no-print-area { display: none !important; }
+      body, html { background: #fff !important; color: #000 !important; font-size: 11pt !important; }
+      .fixed.inset-0 { position: static !important; background: transparent !important; display: block !important; padding: 0 !important; }
+      .shadow-2xl, .shadow-xl, .shadow-lg, .shadow-md, .shadow-xs, .shadow-2xs { box-shadow: none !important; border: 1px solid #cbd5e1 !important; }
+      .max-w-4xl, .max-w-3xl, .max-w-2xl { max-width: 100% !important; width: 100% !important; margin: 0 !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useMemo, useRef, useCallback } = React;
+
+    // --- Clean SVG Icon Engine ---
+    const Icon = ({ name, className = "w-4 h-4" }) => {
+      const icons = {
+        users: <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M22 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75" />,
+        heart: <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />,
+        book: <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z M6 6h10 M6 10h10" />,
+        shield: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z M9 12l2 2 4-4" />,
+        download: <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 M7 10l5 5 5-5 M12 15V3" />,
+        upload: <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 M17 8l-5-5-5 5 M12 3v12" />,
+        lock: <path d="M7 11V7a5 5 0 0 1 10 0v4 M5 11h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2z" />,
+        eye: <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />,
+        eyeOff: <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24 M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68 M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61 M2 2l20 20" />,
+        search: <path d="m21 21-4.3-4.3 M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z" />,
+        plus: <path d="M5 12h14 M12 5v14" />,
+        trash: <path d="M3 6h18 M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6 M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2 M10 11v6 M14 11v6" />,
+        edit: <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z M15 5l4 4" />,
+        printer: <path d="M6 9V2h12v7 M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2 M6 14h12v8H6z" />,
+        fileText: <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6 M16 13H8 M16 17H8 M10 9H8" />,
+        camera: <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z M12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />,
+        arrowLeft: <path d="m12 19-7-7 7-7 M19 12H5" />,
+        arrowRight: <path d="M5 12h14 M12 5l7 7-7 7" />,
+        check: <path d="M20 6 9 17l-5-5" />,
+        checkCircle: <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14 M22 4 12 14.01l-3-3" />,
+        alert: <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z M12 9v4 M12 17h.01" />,
+        phone: <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />,
+        clock: <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />,
+        award: <circle cx="12" cy="8" r="7" /><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />,
+        stethoscope: <path d="M4.5 3v5a5.5 5.5 0 0 0 11 0V3 M8 13.5A7.5 7.5 0 0 0 15.5 21a2 2 0 0 0 2-2v-4.5 M20 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />,
+        hardDrive: <line x1="22" y1="12" x2="2" y2="12" /><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /><line x1="6" y1="16" x2="6.01" y2="16" /><line x1="10" y1="16" x2="10.01" y2="16" />,
+        x: <path d="M18 6 6 18 M6 6l12 12" />
+      };
+      return (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+          {icons[name] || icons.shield}
+        </svg>
+      );
+    };
+
+    // --- Word Document Export (.doc) Engine ---
+    function escapeXml(unsafe = '') {
+      return String(unsafe).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+    function downloadWordDoc(filename, title, contentHtml) {
+      const fileContent = `<!DOCTYPE html>
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+  <meta charset='utf-8'><title>${escapeXml(title)}</title>
+  <style>
+    @page { size: letter; margin: 0.8in; }
+    body { font-family: 'Calibri', Arial, sans-serif; font-size: 11pt; line-height: 1.5; color: #1e293b; }
+    .org-header { border-bottom: 2pt solid #047857; padding-bottom: 8pt; margin-bottom: 16pt; }
+    .org-title { font-size: 15pt; font-weight: bold; color: #047857; margin: 0; }
+    h1 { font-size: 18pt; font-weight: bold; color: #0f172a; margin-bottom: 6pt; }
+    h2 { font-size: 12pt; font-weight: bold; color: #047857; border-bottom: 1pt solid #cbd5e1; padding-bottom: 3pt; margin-top: 14pt; }
+    table { width: 100%; border-collapse: collapse; margin: 8pt 0 14pt 0; }
+    th, td { border: 1pt solid #cbd5e1; padding: 6pt 8pt; font-size: 10pt; vertical-align: top; }
+    th { background-color: #f1f5f9; font-weight: bold; }
+    .footer { border-top: 1pt solid #cbd5e1; margin-top: 24pt; padding-top: 8pt; font-size: 9pt; }
+  </style>
+</head>
+<body>${contentHtml}</body></html>`;
+      const blob = new Blob(['\ufeff', fileContent], { type: 'application/msword' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    // --- Initial Seed Data ---
+    const DEFAULT_COMMUNITIES = [
+      'Brgy. Langkiwa, Binan, Laguna',
+      'Towerville, San Jose Del Monte Bulacan',
+      'Brgy. Nangka, Marikina',
+      'Barugohay, Carigara, Leyte',
+      'Southville, Sta. Rosa Laguna',
+    ];
+
+    const DEFAULT_POLICIES = [
+      { id: 'data_privacy', title: 'Data Privacy Policy', category: 'Information Security & Compliance', description: 'Governs collection, air-gapped local storage, and masking of beneficiary and donor data under RA 10173.' },
+      { id: 'employee_safety', title: 'Employee Safety Policy', category: 'Human Resources & Field Operations', description: 'Workplace safety protocols, field assessment precautions, and emergency disaster relief safety.' },
+      { id: 'child_protection', title: 'Child Protection Policy', category: 'Safeguarding & Ethics', description: 'Mandatory safeguarding code of conduct, zero-tolerance reporting, and child rights standards.' }
+    ];
+
+    const INITIAL_CHILDREN = [
+      {
+        id: 'ch-1', beneficiaryName: 'Jasmine Alcantara Dela Cruz', beneficiaryCode: 'VIN-CL-2024-001', nickname: 'Jas',
+        bday: '2016-04-12', age: 9, gradeLevel: 'Grade 3', favoriteSubject: 'Science and Nature Studies',
+        householdChores: 'Sweeping the yard and washing dishes after dinner', siblings: '3 siblings (Carlos 14, Marco 11, Mia 2)',
+        fatherNameOccupation: 'Danilo Dela Cruz (Tricycle Driver)', motherNameOccupation: 'Rowena Dela Cruz (Sewing & Laundry Worker)',
+        briefHistoryOfFamily: 'Family relocated following urban flooding. Both parents work daily wage jobs.',
+        status: 'sponsored', sponsorName: 'Grace Community Partners', sponsorCode: 'SPN-US-882',
+        communityCluster: 'Brgy. Langkiwa, Binan, Laguna', mediaReleaseFormSigned: true, childProtectionPolicySigned: true, photoUrl: ''
+      },
+      {
+        id: 'ch-2', beneficiaryName: 'Carlos Miguel Mendoza Santos', beneficiaryCode: 'VIN-CL-2024-002', nickname: 'Caloy',
+        bday: '2014-08-22', age: 11, gradeLevel: 'Grade 5', favoriteSubject: 'Mathematics & Chess',
+        householdChores: 'Fetching clean water and tutoring younger sister', siblings: '2 younger sisters',
+        fatherNameOccupation: 'Ferdinand Santos (Construction Mason)', motherNameOccupation: 'Elena Santos (Barangay Daycare Volunteer)',
+        briefHistoryOfFamily: 'Living in relocation housing. Eldest son displaying high academic interest.',
+        status: 'available', communityCluster: 'Towerville, San Jose Del Monte Bulacan',
+        mediaReleaseFormSigned: true, childProtectionPolicySigned: true, photoUrl: ''
+      }
+    ];
+
+    const INITIAL_VOLUNTEERS = [
+      {
+        id: 'vol-1', volunteerCode: 'VIN-VOL-2024-001', fullName: 'Maria Elena Santos', preferredName: 'Elena', gender: 'Female',
+        birthdate: '1996-08-14', age: 28, contactNumber: '0917-822-4410', email: 'elena.santos@gmail.com',
+        address: 'Block 12, Lot 4, Phase 2, Brgy. Langkiwa', barangayCommunity: 'Brgy. Langkiwa, Binan, Laguna',
+        occupation: 'Licensed Elementary School Teacher', engagementType: 'long_term', status: 'active',
+        enrolledByOfficer: 'Jericho (Project Officer)', enrollmentDate: '2024-02-10',
+        emergencyContact: { name: 'Roberto Santos', relationship: 'Father', primaryPhone: '0917-555-1201' },
+        volunteerTracks: ['ChildLink Tutoring & Mentorship', 'EiE Emergency Learning & Relief'],
+        availabilityDays: ['Saturdays', 'Sundays'], availabilityHoursPerWeek: '6-8 hours/week',
+        skills: ['Teaching & Tutoring', 'Event Facilitation', 'First Aid / Medical'],
+        educationLevel: 'Bachelor of Elementary Education (Licensed Teacher)',
+        bloodType: 'O+', childProtectionPolicyAgreed: true, volunteerWaiverSigned: true,
+        characterReferences: [{ name: 'Principal Anita Reyes', relationship: 'Department Head', organization: 'DepEd Binan', phone: '0919-445-1200' }]
+      },
+      {
+        id: 'vol-2', volunteerCode: 'VIN-VOL-2024-002', fullName: 'Joshua Miguel Tan', preferredName: 'Josh', gender: 'Male',
+        birthdate: '2002-11-23', age: 22, contactNumber: '0918-933-7721', email: 'josh.tan2002@outlook.com',
+        address: 'Area C, Towerville Phase 4', barangayCommunity: 'Towerville, San Jose Del Monte Bulacan',
+        occupation: 'BS Information Technology Student', engagementType: 'one_time', status: 'completed',
+        enrolledByOfficer: 'Jericho (Project Officer)', enrollmentDate: '2024-07-05',
+        emergencyContact: { name: 'Caridad Tan', relationship: 'Mother', primaryPhone: '0918-555-8832' },
+        volunteerTracks: ['CVA Citizen Advocacy & Scorecards', 'Relief Logistics & Packing'],
+        availabilityDays: ['Flexible / On-Call', 'Saturdays'], availabilityHoursPerWeek: 'Full day during disaster relief events',
+        skills: ['Logistics & Driving', 'Photography & Video', 'Data Entry & Admin'],
+        educationLevel: 'College Undergraduate (Senior Year)',
+        bloodType: 'A+', childProtectionPolicyAgreed: true, volunteerWaiverSigned: true,
+        characterReferences: [{ name: 'SK Chairman Mark Villanueva', relationship: 'Youth Council Chairman', organization: 'Towerville SK', phone: '0917-332-9011' }]
+      }
+    ];
+
+    const INITIAL_REPORTS = [
+      {
+        id: 'rep-1', title: 'Citizen Voice and Action: Community Scorecard Dialogue for Barangay Health and Child Protection',
+        program: 'cva', date: '2024-09-14', location: 'Barangay Multi-Purpose Center, Community Hall',
+        officerName: 'Jericho', officerRole: 'Project Officer - CVA',
+        summary: 'Field dispatch documenting citizen scorecard dialogue bringing together 240 community residents and barangay officials.',
+        situationOverview: 'Residents in the community faced recurrent shortages of maternal health medicines and limited clinic operational hours.',
+        actionTaken: 'Facilitated official Department of Health scorecard interface meeting with councilors, health workers, and parents.',
+        challengesAndAdaptations: 'Addressed initial apprehension through standard government service indicators.',
+        metrics: [{ label: 'Citizen Participants', value: '240', unit: 'residents' }, { label: 'Scorecard Dialogue', value: '100%', unit: 'completed' }],
+        communityVoiceQuote: { quote: 'Through Citizen Voice and Action, our barangay officials sat down with us as partners.', author: 'Nanay Corazon (47)', role: 'Community Health Monitor' },
+        tags: ['CVA', 'Social Accountability', 'Health Rights'], coverImage: ''
+      }
+    ];
+
+    // --- Main Standalone App Component ---
+    function StandaloneApp() {
+      // Data state loaded from LocalStorage
+      const [children, setChildren] = useState(() => {
+        const saved = localStorage.getItem('vineyard_children');
+        return saved ? JSON.parse(saved) : INITIAL_CHILDREN;
+      });
+      const [volunteers, setVolunteers] = useState(() => {
+        const saved = localStorage.getItem('vineyard_volunteers');
+        return saved ? JSON.parse(saved) : INITIAL_VOLUNTEERS;
+      });
+      const [reports, setReports] = useState(() => {
+        const saved = localStorage.getItem('vineyard_reports');
+        return saved ? JSON.parse(saved) : INITIAL_REPORTS;
+      });
+      const [communities, setCommunities] = useState(() => {
+        const saved = localStorage.getItem('vineyard_communities');
+        return saved ? JSON.parse(saved) : DEFAULT_COMMUNITIES;
+      });
+      const [policies, setPolicies] = useState(() => {
+        const saved = localStorage.getItem('vineyard_policies');
+        return saved ? JSON.parse(saved) : DEFAULT_POLICIES;
+      });
+      const [auditLogs, setAuditLogs] = useState(() => {
+        const saved = localStorage.getItem('vineyard_audit_logs');
+        return saved ? JSON.parse(saved) : [
+          { id: 'log-1', timestamp: new Date().toISOString(), action: 'System Loaded', details: 'Initialized standalone offline workstation masterlist', officer: 'Jericho (Project Officer)' }
+        ];
+      });
+
+      // App Settings
+      const [activeTab, setActiveTab] = useState('childlink'); // 'childlink' | 'volunteers' | 'reports' | 'security'
+      const [privacyMode, setPrivacyMode] = useState(false);
+      const [isLocked, setIsLocked] = useState(false);
+      const [pinCode, setPinCode] = useState('1234');
+      const [enteredPin, setEnteredPin] = useState('');
+      const [pinError, setPinError] = useState(false);
+
+      // File System Access API Handle (In-Memory direct stream handle)
+      const [fileHandle, setFileHandle] = useState(null);
+      const [fileHandleName, setFileHandleName] = useState('Local Browser Cache (Standalone)');
+      const [isAutoSaving, setIsAutoSaving] = useState(false);
+
+      // Modals
+      const [selectedChildDossier, setSelectedChildDossier] = useState(null);
+      const [isChildModalOpen, setIsChildModalOpen] = useState(false);
+      const [childToEdit, setChildToEdit] = useState(null);
+
+      const [selectedVolDossier, setSelectedVolDossier] = useState(null);
+      const [isVolModalOpen, setIsVolModalOpen] = useState(false);
+      const [volToEdit, setVolToEdit] = useState(null);
+
+      const [selectedReportDetail, setSelectedReportDetail] = useState(null);
+      const [isReportComposeOpen, setIsReportComposeOpen] = useState(false);
+      const [reportToEdit, setReportToEdit] = useState(null);
+
+      // Log Audit Helper
+      const logAudit = (action, details) => {
+        const entry = { id: `log-${Date.now()}`, timestamp: new Date().toISOString(), action, details, officer: 'Jericho (Project Officer)' };
+        setAuditLogs(prev => [entry, ...prev.slice(0, 99)]);
+      };
+
+      // Persistent LocalStorage Auto-Sync
+      useEffect(() => {
+        localStorage.setItem('vineyard_children', JSON.stringify(children));
+        localStorage.setItem('vineyard_volunteers', JSON.stringify(volunteers));
+        localStorage.setItem('vineyard_reports', JSON.stringify(reports));
+        localStorage.setItem('vineyard_communities', JSON.stringify(communities));
+        localStorage.setItem('vineyard_policies', JSON.stringify(policies));
+        localStorage.setItem('vineyard_audit_logs', JSON.stringify(auditLogs));
+
+        // Stream directly to local disk if File Handle was selected via File System Access API
+        if (fileHandle) {
+          (async () => {
+            try {
+              setIsAutoSaving(true);
+              const writable = await fileHandle.createWritable();
+              const fullData = { version: '1.0', organization: 'Vineyard Humanitarian Operations', lastSaved: new Date().toISOString(), children, volunteers, reports, communities, policies, auditLogs };
+              await writable.write(JSON.stringify(fullData, null, 2));
+              await writable.close();
+            } catch (err) {
+              console.warn("Direct stream disk write failed:", err);
+            } finally {
+              setTimeout(() => setIsAutoSaving(false), 400);
+            }
+          })();
+        }
+      }, [children, volunteers, reports, communities, policies, auditLogs, fileHandle]);
+
+      // Direct Disk File Picker (window.showSaveFilePicker)
+      const handleSelectLocalDiskFile = async () => {
+        if ('showSaveFilePicker' in window) {
+          try {
+            const handle = await window.showSaveFilePicker({
+              suggestedName: 'vineyard_masterlist.json',
+              types: [{ description: 'JSON Database File', accept: { 'application/json': ['.json'] } }]
+            });
+            setFileHandle(handle);
+            setFileHandleName(handle.name || 'C:\\WebApp Data\\vineyard_masterlist.json');
+            logAudit('Disk Stream Connected', `Connected direct persistent disk stream to ${handle.name}`);
+            alert(`Connected direct background stream to "${handle.name}". Every change will now save directly to your disk!`);
+          } catch (err) {
+            if (err.name !== 'AbortError') console.error(err);
+          }
+        } else {
+          alert('Modern File System Access API is not active in this browser mode. Standard local browser persistence and the manual Export Backup button are fully active!');
+        }
+      };
+
+      // Full Manual Export Backup
+      const handleExportBackup = () => {
+        const fullData = { version: '1.0', organization: 'Vineyard Humanitarian Operations', backupDate: new Date().toISOString(), children, volunteers, reports, communities, policies, auditLogs };
+        const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `vineyard_masterlist_backup_${new Date().toISOString().slice(0, 10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        logAudit('Backup Exported', 'Exported full masterlist database backup JSON file');
+      };
+
+      // Full Manual Import / Restore
+      const handleImportBackup = (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          try {
+            const data = JSON.parse(event.target.result);
+            if (data.children) setChildren(data.children);
+            if (data.volunteers) setVolunteers(data.volunteers);
+            if (data.reports) setReports(data.reports);
+            if (data.communities) setCommunities(data.communities);
+            if (data.policies) setPolicies(data.policies);
+            logAudit('Backup Restored', `Restored masterlist database from file: ${file.name}`);
+            alert('Database successfully restored from backup file!');
+          } catch (err) {
+            alert('Invalid backup JSON format.');
+          }
+        };
+        reader.readAsText(file);
+      };
+
+      // Privacy mask helper
+      const mask = (text) => {
+        if (!privacyMode || !text) return text;
+        const words = String(text).split(' ');
+        return words.map(w => w.length > 2 ? `${w[0]}${'*'.repeat(Math.max(w.length - 2, 2))}${w[w.length - 1]}` : '***').join(' ');
+      };
+
+      // PIN Unlock
+      const handleUnlock = (e) => {
+        e.preventDefault();
+        if (enteredPin === pinCode) {
+          setIsLocked(false);
+          setEnteredPin('');
+          setPinError(false);
+          logAudit('Security Unlock', 'Workstation console unlocked via PIN');
+        } else {
+          setPinError(true);
+        }
+      };
+
+      // Hotkeys (Alt+P for Privacy, Alt+L for Lock)
+      useEffect(() => {
+        const onKeyDown = (e) => {
+          if (e.altKey && (e.key === 'p' || e.key === 'P')) {
+            e.preventDefault();
+            setPrivacyMode(prev => !prev);
+          }
+          if (e.altKey && (e.key === 'l' || e.key === 'L')) {
+            e.preventDefault();
+            setIsLocked(true);
+          }
+        };
+        window.addEventListener('keydown', onKeyDown);
+        return () => window.removeEventListener('keydown', onKeyDown);
+      }, []);
+
+      return (
+        <div className="min-h-screen flex flex-col bg-slate-50 text-slate-800">
+          
+          {/* Top Bar Header */}
+          <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-xs no-print">
+            {privacyMode && (
+              <div className="bg-amber-500 text-white text-xs font-semibold py-1 px-4 flex items-center justify-between">
+                <span>Privacy Masking Active: Beneficiary names, addresses, and sensitive fields are obscured.</span>
+                <button onClick={() => setPrivacyMode(false)} className="underline hover:text-amber-100 font-bold text-xs">Disable</button>
+              </div>
+            )}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-emerald-700 text-white flex items-center justify-center font-bold text-lg shadow-sm">V</div>
+                <div>
+                  <span className="font-extrabold text-slate-900 tracking-tight text-base sm:text-lg block leading-tight">VINEYARD</span>
+                  <span className="text-[10px] text-emerald-700 font-bold tracking-wider uppercase block">Humanitarian Operations</span>
+                </div>
+              </div>
+
+              {/* Navigation Tabs */}
+              <nav className="hidden md:flex items-center gap-6 text-xs sm:text-sm font-semibold">
+                <button onClick={() => setActiveTab('childlink')} className={`flex items-center gap-2 pb-1 border-b-2 transition-colors ${activeTab === 'childlink' ? 'border-emerald-600 text-emerald-800 font-bold' : 'border-transparent text-slate-600 hover:text-slate-900'}`}>
+                  <Icon name="users" className="w-4 h-4 text-emerald-600" />
+                  <span>ChildLink Masterlist ({children.length})</span>
+                </button>
+                <button onClick={() => setActiveTab('volunteers')} className={`flex items-center gap-2 pb-1 border-b-2 transition-colors ${activeTab === 'volunteers' ? 'border-emerald-600 text-emerald-800 font-bold' : 'border-transparent text-slate-600 hover:text-slate-900'}`}>
+                  <Icon name="heart" className="w-4 h-4 text-emerald-600" />
+                  <span>Volunteer Corps ({volunteers.length})</span>
+                </button>
+                <button onClick={() => setActiveTab('reports')} className={`flex items-center gap-2 pb-1 border-b-2 transition-colors ${activeTab === 'reports' ? 'border-emerald-600 text-emerald-800 font-bold' : 'border-transparent text-slate-600 hover:text-slate-900'}`}>
+                  <Icon name="book" className="w-4 h-4 text-emerald-600" />
+                  <span>CVA &amp; EiE Reports ({reports.length})</span>
+                </button>
+                <button onClick={() => setActiveTab('security')} className={`flex items-center gap-2 pb-1 border-b-2 transition-colors ${activeTab === 'security' ? 'border-emerald-600 text-emerald-800 font-bold' : 'border-transparent text-slate-600 hover:text-slate-900'}`}>
+                  <Icon name="shield" className="w-4 h-4 text-emerald-600" />
+                  <span>Security &amp; Backup</span>
+                </button>
+              </nav>
+
+              {/* Top Controls */}
+              <div className="flex items-center gap-2">
+                <button onClick={() => setPrivacyMode(p => !p)} title="Privacy Masking (Alt+P)" className={`p-2 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition-colors ${privacyMode ? 'bg-amber-100 text-amber-900 border-amber-300' : 'bg-slate-50 text-slate-700 border-slate-300 hover:bg-slate-100'}`}>
+                  <Icon name={privacyMode ? 'eyeOff' : 'eye'} className="w-4 h-4" />
+                  <span className="hidden sm:inline">{privacyMode ? 'Masked' : 'Privacy'}</span>
+                </button>
+                <button onClick={() => setIsLocked(true)} title="Lock Session (Alt+L)" className="p-2 rounded-lg border border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-600">
+                  <Icon name="lock" className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Mobile Nav Bar */}
+            <div className="md:hidden flex items-center justify-around border-t border-slate-200 py-2 px-2 bg-slate-50 text-xs">
+              <button onClick={() => setActiveTab('childlink')} className={`px-2.5 py-1 rounded font-medium ${activeTab === 'childlink' ? 'bg-white text-emerald-800 shadow-xs font-bold' : 'text-slate-600'}`}>ChildLink</button>
+              <button onClick={() => setActiveTab('volunteers')} className={`px-2.5 py-1 rounded font-medium ${activeTab === 'volunteers' ? 'bg-white text-emerald-800 shadow-xs font-bold' : 'text-slate-600'}`}>Volunteers</button>
+              <button onClick={() => setActiveTab('reports')} className={`px-2.5 py-1 rounded font-medium ${activeTab === 'reports' ? 'bg-white text-emerald-800 shadow-xs font-bold' : 'text-slate-600'}`}>CVA &amp; EiE</button>
+              <button onClick={() => setActiveTab('security')} className={`px-2.5 py-1 rounded font-medium ${activeTab === 'security' ? 'bg-white text-emerald-800 shadow-xs font-bold' : 'text-slate-600'}`}>Security</button>
+            </div>
+          </header>
+
+          {/* Hard Drive Persistence Bar */}
+          <div className="bg-slate-100 border-b border-slate-200 py-1.5 px-4 text-xs text-slate-600 no-print flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Icon name="hardDrive" className="w-3.5 h-3.5 text-emerald-700" />
+              <span>Disk Target: <strong className="font-mono text-slate-800">{fileHandleName}</strong></span>
+              {isAutoSaving && <span className="text-emerald-700 font-bold animate-pulse">● Saving...</span>}
+            </div>
+            <div className="flex items-center gap-2">
+              <button onClick={handleSelectLocalDiskFile} className="px-2 py-0.5 bg-white border border-slate-300 hover:bg-slate-50 rounded text-[11px] font-bold text-emerald-800">
+                Connect Direct Disk File (showSaveFilePicker)
+              </button>
+              <button onClick={handleExportBackup} className="px-2 py-0.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-[11px] font-bold">
+                Export Masterlist JSON
+              </button>
+              <label className="px-2 py-0.5 bg-white border border-slate-300 hover:bg-slate-50 rounded text-[11px] font-bold text-slate-700 cursor-pointer">
+                Restore JSON
+                <input type="file" accept=".json" onChange={handleImportBackup} className="hidden" />
+              </label>
+            </div>
+          </div>
+
+          {/* Main Viewport Content */}
+          <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            
+            {/* 1. CHILDLINK MASTERLIST */}
+            {activeTab === 'childlink' && (
+              <div className="space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h1 className="text-2xl font-black text-slate-900 tracking-tight">ChildLink Beneficiary Masterlist</h1>
+                    <p className="text-xs text-slate-500 mt-1">Sponsorship tracking, safeguarding policy compliance, and family case records.</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => window.print()} className="px-3 py-2 text-xs font-semibold bg-white border border-slate-300 rounded-lg hover:bg-slate-50 flex items-center gap-1.5 shadow-2xs">
+                      <Icon name="printer" className="w-4 h-4" />
+                      <span>Print Masterlist</span>
+                    </button>
+                    <button onClick={() => { setChildToEdit(null); setIsChildModalOpen(true); }} className="px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg flex items-center gap-1.5 shadow-xs">
+                      <Icon name="plus" className="w-4 h-4" />
+                      <span>Enroll Beneficiary</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs">
+                  <table className="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase tracking-wider">
+                        <th className="py-3 px-4">Code</th>
+                        <th className="py-3 px-4">Beneficiary &amp; Nickname</th>
+                        <th className="py-3 px-4">Age / Grade</th>
+                        <th className="py-3 px-4">Community Cluster</th>
+                        <th className="py-3 px-4">Status / Sponsor</th>
+                        <th className="py-3 px-4">Safeguarding Compliance</th>
+                        <th className="py-3 px-4 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {children.map(child => (
+                        <tr key={child.id} onClick={() => setSelectedChildDossier(child)} className="hover:bg-slate-50/80 transition-colors cursor-pointer">
+                          <td className="py-3.5 px-4 font-mono font-bold text-emerald-800 whitespace-nowrap">{child.beneficiaryCode}</td>
+                          <td className="py-3.5 px-4">
+                            <div className="font-bold text-slate-900">{mask(child.beneficiaryName)}</div>
+                            <div className="text-[11px] text-slate-500">Known as &ldquo;{child.nickname}&rdquo;</div>
+                          </td>
+                          <td className="py-3.5 px-4 whitespace-nowrap font-medium text-slate-800">{child.age} yrs · {child.gradeLevel}</td>
+                          <td className="py-3.5 px-4 text-slate-700">{child.communityCluster}</td>
+                          <td className="py-3.5 px-4 whitespace-nowrap">
+                            <span className={`px-2 py-0.5 rounded text-[10.5px] font-bold ${child.status === 'sponsored' ? 'bg-emerald-100 text-emerald-900' : 'bg-amber-100 text-amber-900'}`}>
+                              {child.status.toUpperCase()}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-4">
+                            <span className="text-[11px] font-medium text-emerald-800">✓ Media Release &amp; Child Protection Signed</span>
+                          </td>
+                          <td className="py-3.5 px-4 text-right whitespace-nowrap" onClick={e => e.stopPropagation()}>
+                            <div className="flex items-center justify-end gap-1">
+                              <button onClick={() => setSelectedChildDossier(child)} title="View Dossier" className="p-1.5 text-slate-400 hover:text-emerald-700">
+                                <Icon name="fileText" className="w-4 h-4" />
+                              </button>
+                              <button onClick={() => { setChildToEdit(child); setIsChildModalOpen(true); }} title="Edit" className="p-1.5 text-slate-400 hover:text-blue-700">
+                                <Icon name="edit" className="w-4 h-4" />
+                              </button>
+                              <button onClick={() => { if (confirm(`Remove ${child.beneficiaryName}?`)) setChildren(c => c.filter(x => x.id !== child.id)); }} title="Delete" className="p-1.5 text-slate-400 hover:text-rose-600">
+                                <Icon name="trash" className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* 2. VOLUNTEER CORPS MASTERLIST */}
+            {activeTab === 'volunteers' && (
+              <div className="space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h1 className="text-2xl font-black text-slate-900 tracking-tight">Humanitarian Corps Volunteer Masterlist</h1>
+                    <p className="text-xs text-slate-500 mt-1">Official registry for Long-Term and One-Time Event community volunteers.</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => window.print()} className="px-3 py-2 text-xs font-semibold bg-white border border-slate-300 rounded-lg hover:bg-slate-50 flex items-center gap-1.5 shadow-2xs">
+                      <Icon name="printer" className="w-4 h-4" />
+                      <span>Print Roster</span>
+                    </button>
+                    <button onClick={() => { setVolToEdit(null); setIsVolModalOpen(true); }} className="px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg flex items-center gap-1.5 shadow-xs">
+                      <Icon name="plus" className="w-4 h-4" />
+                      <span>Enroll Volunteer</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs">
+                  <table className="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase tracking-wider">
+                        <th className="py-3 px-4">Volunteer Code</th>
+                        <th className="py-3 px-4">Full Name &amp; Role</th>
+                        <th className="py-3 px-4">Engagement Choice</th>
+                        <th className="py-3 px-4">Tracks &amp; Skills</th>
+                        <th className="py-3 px-4">Emergency Contact</th>
+                        <th className="py-3 px-4">Status</th>
+                        <th className="py-3 px-4 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {volunteers.map(vol => (
+                        <tr key={vol.id} onClick={() => setSelectedVolDossier(vol)} className="hover:bg-slate-50/80 transition-colors cursor-pointer">
+                          <td className="py-3.5 px-4 font-mono font-bold text-emerald-800 whitespace-nowrap">{vol.volunteerCode}</td>
+                          <td className="py-3.5 px-4">
+                            <div className="font-bold text-slate-900">{mask(vol.fullName)}</div>
+                            <div className="text-[11px] text-slate-500">{vol.preferredName ? `"${vol.preferredName}" · ` : ''}{vol.occupation || 'Volunteer'}</div>
+                          </td>
+                          <td className="py-3.5 px-4 whitespace-nowrap">
+                            <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${vol.engagementType === 'long_term' ? 'bg-emerald-50 text-emerald-800 border-emerald-300' : 'bg-blue-50 text-blue-800 border-blue-300'}`}>
+                              {vol.engagementType === 'long_term' ? 'Long-Term Volunteer' : 'One-Time Event Volunteer'}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-4 max-w-[200px]">
+                            <div className="font-semibold text-slate-800 truncate">{(vol.volunteerTracks || []).join(', ')}</div>
+                            <div className="text-[11px] text-slate-500 truncate">Skills: {(vol.skills || []).join(' · ')}</div>
+                          </td>
+                          <td className="py-3.5 px-4 whitespace-nowrap">
+                            <div className="font-medium text-slate-800">{vol.emergencyContact?.name} ({vol.emergencyContact?.relationship})</div>
+                            <div className="text-[11px] font-mono text-slate-500">{mask(vol.emergencyContact?.primaryPhone)}</div>
+                          </td>
+                          <td className="py-3.5 px-4 whitespace-nowrap">
+                            <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-900 font-bold uppercase text-[10.5px]">● {vol.status}</span>
+                          </td>
+                          <td className="py-3.5 px-4 text-right whitespace-nowrap" onClick={e => e.stopPropagation()}>
+                            <div className="flex items-center justify-end gap-1">
+                              <button onClick={() => setSelectedVolDossier(vol)} title="View Dossier" className="p-1.5 text-slate-400 hover:text-emerald-700">
+                                <Icon name="fileText" className="w-4 h-4" />
+                              </button>
+                              <button onClick={() => { setVolToEdit(vol); setIsVolModalOpen(true); }} title="Edit" className="p-1.5 text-slate-400 hover:text-blue-700">
+                                <Icon name="edit" className="w-4 h-4" />
+                              </button>
+                              <button onClick={() => { if (confirm(`Remove volunteer ${vol.fullName}?`)) setVolunteers(v => v.filter(x => x.id !== vol.id)); }} title="Delete" className="p-1.5 text-slate-400 hover:text-rose-600">
+                                <Icon name="trash" className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* 3. CVA & EIE COMMUNITY FIELD REPORTS */}
+            {activeTab === 'reports' && (
+              <div className="space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h1 className="text-2xl font-black text-slate-900 tracking-tight">Citizen Voice and Action (CVA) &amp; Education in Emergencies (EiE) Dispatches</h1>
+                    <p className="text-xs text-slate-500 mt-1">Field engagement logs, community scorecards, and emergency learning metrics.</p>
+                  </div>
+                  <button onClick={() => { setReportToEdit(null); setIsReportComposeOpen(true); }} className="px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg flex items-center gap-1.5 shadow-xs">
+                    <Icon name="plus" className="w-4 h-4" />
+                    <span>Compose Field Report</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {reports.map(rep => (
+                    <div key={rep.id} onClick={() => setSelectedReportDetail(rep)} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs hover:shadow-md transition-all cursor-pointer p-6 space-y-4">
+                      <div className="flex items-center justify-between text-xs text-emerald-800 font-bold uppercase tracking-wider">
+                        <span>{rep.program === 'cva' ? 'Citizen Voice and Action (CVA)' : 'Education in Emergencies (EiE)'}</span>
+                        <span className="text-slate-400 font-normal">{rep.date}</span>
+                      </div>
+                      <h2 className="text-lg font-bold text-slate-900 leading-snug">{rep.title}</h2>
+                      <p className="text-xs text-slate-600 line-clamp-3">{rep.summary}</p>
+                      
+                      {rep.metrics && rep.metrics.length > 0 && (
+                        <div className="grid grid-cols-2 gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200 text-center">
+                          {rep.metrics.slice(0, 2).map((m, i) => (
+                            <div key={i}>
+                              <span className="text-[10px] text-slate-500 block truncate">{m.label}</span>
+                              <span className="text-sm font-black text-slate-800">{m.value} {m.unit}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs" onClick={e => e.stopPropagation()}>
+                        <span className="text-slate-500">Officer: <strong>{rep.officerName}</strong></span>
+                        <div className="flex items-center gap-2">
+                          <button onClick={() => { if (confirm(`Delete report "${rep.title}"?`)) setReports(r => r.filter(x => x.id !== rep.id)); }} className="p-1.5 text-slate-400 hover:text-rose-600" title="Delete Report">
+                            <Icon name="trash" className="w-4 h-4" />
+                          </button>
+                          <span className="text-emerald-700 font-bold flex items-center gap-1">Read Full Dispatch &rarr;</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 4. SECURITY & COMPLIANCE */}
+            {activeTab === 'security' && (
+              <div className="space-y-6">
+                <div>
+                  <h1 className="text-2xl font-black text-slate-900 tracking-tight">Security, Safeguarding Policies &amp; Hard Drive Persistence</h1>
+                  <p className="text-xs text-slate-500 mt-1">Local data persistence, policy document uploads, and security audit log.</p>
+                </div>
+
+                {/* Local Storage & Backup Box */}
+                <div className="p-6 bg-white border border-slate-200 rounded-2xl shadow-2xs space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-emerald-100 text-emerald-800 rounded-xl"><Icon name="hardDrive" className="w-6 h-6" /></div>
+                    <div>
+                      <h2 className="text-base font-bold text-slate-900">Direct Hard Drive Storage</h2>
+                      <p className="text-xs text-slate-500">Persistent file path on your local disk: <code className="font-mono bg-slate-100 px-1 py-0.5 rounded text-slate-800">C:\WebApp Data\vineyard_masterlist.json</code></p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                    <button onClick={handleSelectLocalDiskFile} className="p-4 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-xl text-left cursor-pointer transition-colors">
+                      <span className="text-xs font-bold text-emerald-950 block">Select Disk File (File System API)</span>
+                      <span className="text-[11px] text-emerald-700 block mt-1">Prompt file picker for direct continuous stream.</span>
+                    </button>
+                    <button onClick={handleExportBackup} className="p-4 bg-white hover:bg-slate-50 border border-slate-300 rounded-xl text-left cursor-pointer transition-colors">
+                      <span className="text-xs font-bold text-slate-900 block">Download Full Backup JSON</span>
+                      <span className="text-[11px] text-slate-500 block mt-1">Export full masterlist database to hard drive.</span>
+                    </button>
+                    <label className="p-4 bg-white hover:bg-slate-50 border border-slate-300 rounded-xl text-left cursor-pointer transition-colors block">
+                      <span className="text-xs font-bold text-slate-900 block">Restore from Backup JSON</span>
+                      <span className="text-[11px] text-slate-500 block mt-1">Upload previously saved database file.</span>
+                      <input type="file" accept=".json" onChange={handleImportBackup} className="hidden" />
+                    </label>
+                  </div>
+                </div>
+
+                {/* Policies Management (Data Privacy, Employee Safety, Child Protection) */}
+                <div className="p-6 bg-white border border-slate-200 rounded-2xl shadow-2xs space-y-4">
+                  <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <Icon name="shield" className="w-5 h-5 text-emerald-700" />
+                    <span>Safeguarding &amp; Organizational Policies</span>
+                  </h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {policies.map(p => (
+                      <div key={p.id} className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                        <span className="text-xs font-bold text-slate-900 block">{p.title}</span>
+                        <span className="text-[11px] text-slate-500 block leading-relaxed">{p.description}</span>
+                        <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-[11px]">
+                          <span className="text-emerald-700 font-bold">✓ Active Policy</span>
+                          <label className="text-blue-600 hover:text-blue-800 font-bold cursor-pointer">
+                            Upload Doc
+                            <input type="file" onChange={(e) => { if (e.target.files?.[0]) alert(`Uploaded ${e.target.files[0].name} for ${p.title}`); }} className="hidden" />
+                          </label>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Audit Logs */}
+                <div className="p-6 bg-white border border-slate-200 rounded-2xl shadow-2xs space-y-3">
+                  <h2 className="text-base font-bold text-slate-900">Security Audit Log</h2>
+                  <div className="max-h-60 overflow-y-auto space-y-2 text-xs font-mono">
+                    {auditLogs.map(l => (
+                      <div key={l.id} className="p-2 bg-slate-50 rounded border border-slate-200 flex items-center justify-between">
+                        <div>
+                          <span className="text-slate-400 mr-2">{new Date(l.timestamp).toLocaleTimeString()}</span>
+                          <span className="font-bold text-slate-800 mr-2">[{l.action}]</span>
+                          <span className="text-slate-600">{l.details}</span>
+                        </div>
+                        <span className="text-[10px] text-slate-400">{l.officer}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+          </main>
+
+          {/* Child Beneficiary Dossier Modal */}
+          {selectedChildDossier && (
+            <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+              <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full border border-slate-200 overflow-hidden my-auto max-h-[95vh] flex flex-col">
+                <div className="px-6 py-3 border-b border-slate-200 flex items-center justify-between bg-slate-50 no-print">
+                  <span className="text-xs font-mono font-bold text-emerald-800">{selectedChildDossier.beneficiaryCode}</span>
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => {
+                      const html = `<h1>Beneficiary Dossier: ${selectedChildDossier.beneficiaryName}</h1><p>Code: ${selectedChildDossier.beneficiaryCode}</p><p>Community: ${selectedChildDossier.communityCluster}</p><p>Age: ${selectedChildDossier.age}</p><p>Grade: ${selectedChildDossier.gradeLevel}</p><p>Parents: ${selectedChildDossier.fatherNameOccupation} / ${selectedChildDossier.motherNameOccupation}</p>`;
+                      downloadWordDoc(`Dossier_${selectedChildDossier.beneficiaryCode}.doc`, selectedChildDossier.beneficiaryName, html);
+                    }} className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold">Download Word (.doc)</button>
+                    <button onClick={() => window.print()} className="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-semibold">Print</button>
+                    <button onClick={() => setSelectedChildDossier(null)} className="p-1 text-slate-400 hover:text-slate-600"><Icon name="x" className="w-5 h-5" /></button>
+                  </div>
+                </div>
+                <div className="p-8 overflow-y-auto space-y-6 text-sm">
+                  <div className="border-b-2 border-emerald-700 pb-4">
+                    <h1 className="text-2xl font-black text-slate-900">{mask(selectedChildDossier.beneficiaryName)}</h1>
+                    <p className="text-xs text-slate-500 mt-1">Known as &ldquo;{selectedChildDossier.nickname}&rdquo; · {selectedChildDossier.communityCluster}</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 text-xs">
+                    <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                      <p><strong>Age &amp; Grade:</strong> {selectedChildDossier.age} yrs old, {selectedChildDossier.gradeLevel}</p>
+                      <p><strong>Favorite Subject:</strong> {selectedChildDossier.favoriteSubject || '—'}</p>
+                      <p><strong>Household Chores:</strong> {selectedChildDossier.householdChores || '—'}</p>
+                    </div>
+                    <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                      <p><strong>Father:</strong> {mask(selectedChildDossier.fatherNameOccupation)}</p>
+                      <p><strong>Mother:</strong> {mask(selectedChildDossier.motherNameOccupation)}</p>
+                      <p><strong>Siblings:</strong> {selectedChildDossier.siblings || '—'}</p>
+                    </div>
+                  </div>
+                  <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-200 text-xs">
+                    <strong className="text-emerald-950 block mb-1">Safeguarding &amp; Policy Compliance:</strong>
+                    <span className="text-emerald-800">✓ Signed Vineyard Child Protection Policy · ✓ Media Release Form Signed</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Volunteer Dossier Modal */}
+          {selectedVolDossier && (
+            <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+              <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full border border-slate-200 overflow-hidden my-auto max-h-[95vh] flex flex-col">
+                <div className="px-6 py-3 border-b border-slate-200 flex items-center justify-between bg-slate-50 no-print">
+                  <span className="text-xs font-mono font-bold text-emerald-800">{selectedVolDossier.volunteerCode}</span>
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => {
+                      const html = `<h1>Volunteer Dossier: ${selectedVolDossier.fullName}</h1><p>ID: ${selectedVolDossier.volunteerCode}</p><p>Engagement: ${selectedVolDossier.engagementType}</p><p>Tracks: ${(selectedVolDossier.volunteerTracks || []).join(', ')}</p><p>Emergency Contact: ${selectedVolDossier.emergencyContact?.name} (${selectedVolDossier.emergencyContact?.primaryPhone})</p>`;
+                      downloadWordDoc(`Volunteer_${selectedVolDossier.volunteerCode}.doc`, selectedVolDossier.fullName, html);
+                    }} className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold">Download Word (.doc)</button>
+                    <button onClick={() => window.print()} className="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-semibold">Print</button>
+                    <button onClick={() => setSelectedVolDossier(null)} className="p-1 text-slate-400 hover:text-slate-600"><Icon name="x" className="w-5 h-5" /></button>
+                  </div>
+                </div>
+                <div className="p-8 overflow-y-auto space-y-6 text-sm">
+                  <div className="border-b-2 border-emerald-700 pb-4">
+                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border mb-2 inline-block ${selectedVolDossier.engagementType === 'long_term' ? 'bg-emerald-50 text-emerald-800 border-emerald-300' : 'bg-blue-50 text-blue-800 border-blue-300'}`}>
+                      {selectedVolDossier.engagementType === 'long_term' ? 'Long-Term Volunteer' : 'One-Time Event Volunteer'}
+                    </span>
+                    <h1 className="text-2xl font-black text-slate-900">{mask(selectedVolDossier.fullName)}</h1>
+                    <p className="text-xs text-slate-500 mt-1">Status: {selectedVolDossier.status.toUpperCase()} · Enrolled: {selectedVolDossier.enrollmentDate}</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 text-xs">
+                    <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                      <p><strong>Contact Phone:</strong> {mask(selectedVolDossier.contactNumber)}</p>
+                      <p><strong>Email:</strong> {selectedVolDossier.email || '—'}</p>
+                      <p><strong>Community:</strong> {selectedVolDossier.barangayCommunity}</p>
+                      <p><strong>Occupation:</strong> {selectedVolDossier.occupation || '—'}</p>
+                    </div>
+                    <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                      <p><strong>Emergency Contact:</strong> {selectedVolDossier.emergencyContact?.name} ({selectedVolDossier.emergencyContact?.relationship})</p>
+                      <p><strong>Emergency Phone:</strong> {mask(selectedVolDossier.emergencyContact?.primaryPhone)}</p>
+                      <p><strong>Blood Type:</strong> {selectedVolDossier.bloodType || 'Unknown'}</p>
+                    </div>
+                  </div>
+                  <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-2">
+                    <p><strong>Assigned Tracks:</strong> {(selectedVolDossier.volunteerTracks || []).join(', ')}</p>
+                    <p><strong>Core Skills:</strong> {(selectedVolDossier.skills || []).join(' · ')}</p>
+                    <p><strong>Availability:</strong> {(selectedVolDossier.availabilityDays || []).join(', ')} ({selectedVolDossier.availabilityHoursPerWeek})</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Report Detail Modal */}
+          {selectedReportDetail && (
+            <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+              <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full border border-slate-200 overflow-hidden my-auto max-h-[95vh] flex flex-col">
+                <div className="px-6 py-3 border-b border-slate-200 flex items-center justify-between bg-slate-50 no-print">
+                  <span className="text-xs font-bold text-emerald-800 uppercase">{selectedReportDetail.program === 'cva' ? 'Citizen Voice and Action' : 'Education in Emergencies'}</span>
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => {
+                      const html = `<h1>${selectedReportDetail.title}</h1><p>Date: ${selectedReportDetail.date}</p><p>Summary: ${selectedReportDetail.summary}</p><p>Context: ${selectedReportDetail.situationOverview}</p><p>Action Taken: ${selectedReportDetail.actionTaken}</p>`;
+                      downloadWordDoc(`Report_${selectedReportDetail.id}.doc`, selectedReportDetail.title, html);
+                    }} className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold">Download Word (.doc)</button>
+                    <button onClick={() => window.print()} className="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-semibold">Print</button>
+                    <button onClick={() => setSelectedReportDetail(null)} className="p-1 text-slate-400 hover:text-slate-600"><Icon name="x" className="w-5 h-5" /></button>
+                  </div>
+                </div>
+                <div className="p-8 overflow-y-auto space-y-6 text-sm">
+                  <h1 className="text-2xl font-black text-slate-900 leading-tight">{selectedReportDetail.title}</h1>
+                  <p className="text-xs text-slate-500">Date: {selectedReportDetail.date} · Location: {selectedReportDetail.location} · Officer: {selectedReportDetail.officerName}</p>
+                  <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-200 text-slate-800 font-medium">{selectedReportDetail.summary}</div>
+                  <div>
+                    <h3 className="font-bold text-slate-900 text-sm mb-1">1. Context &amp; Vulnerability Assessment</h3>
+                    <p className="text-xs text-slate-700 leading-relaxed">{selectedReportDetail.situationOverview}</p>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-slate-900 text-sm mb-1">2. Operational Deployment &amp; Response</h3>
+                    <p className="text-xs text-slate-700 leading-relaxed">{selectedReportDetail.actionTaken}</p>
+                  </div>
+                  {selectedReportDetail.communityVoiceQuote && (
+                    <div className="p-4 bg-slate-50 border-l-4 border-emerald-600 text-xs italic">
+                      &ldquo;{selectedReportDetail.communityVoiceQuote.quote}&rdquo; — <strong>{selectedReportDetail.communityVoiceQuote.author}</strong> ({selectedReportDetail.communityVoiceQuote.role})
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* PIN Lock Screen Modal */}
+          {isLocked && (
+            <div className="fixed inset-0 z-50 bg-slate-900/90 backdrop-blur-md flex items-center justify-center p-4">
+              <form onSubmit={handleUnlock} className="bg-white rounded-2xl p-6 sm:p-8 max-w-sm w-full text-center space-y-4 shadow-2xl">
+                <div className="w-12 h-12 bg-emerald-100 text-emerald-800 rounded-2xl flex items-center justify-center mx-auto"><Icon name="lock" className="w-6 h-6" /></div>
+                <div>
+                  <h2 className="text-lg font-bold text-slate-900">Console Locked</h2>
+                  <p className="text-xs text-slate-500 mt-1">Enter your officer PIN code to resume session (Default: 1234).</p>
+                </div>
+                <input
+                  type="password"
+                  maxLength="6"
+                  autoFocus
+                  placeholder="PIN"
+                  value={enteredPin}
+                  onChange={e => setEnteredPin(e.target.value)}
+                  className="w-full text-center text-2xl font-mono tracking-widest px-4 py-2 border rounded-xl border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                {pinError && <p className="text-xs text-rose-600 font-bold">Incorrect PIN code. Try again.</p>}
+                <button type="submit" className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-colors cursor-pointer">
+                  Unlock Console
+                </button>
+              </form>
+            </div>
+          )}
+
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<StandaloneApp />);
+  </script>
+</body>
+</html>

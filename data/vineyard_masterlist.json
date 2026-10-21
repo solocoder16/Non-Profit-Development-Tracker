@@ -1,0 +1,495 @@
+{
+  "version": "1.0",
+  "organization": "NGO Data Tracker Operations",
+  "lastUpdated": "2026-10-19T04:59:37.574Z",
+  "communities": [
+    "Brgy. Langkiwa, Binan, Laguna",
+    "Towerville, San Jose Del Monte Bulacan",
+    "Brgy. Nangka, Marikina",
+    "Barugohay, Carigara, Leyte",
+    "Southville, Sta. Rosa Laguna"
+  ],
+  "children": [
+    {
+      "id": "ch-1",
+      "beneficiaryName": "Jasmine Alcantara Dela Cruz",
+      "beneficiaryCode": "VIN-CL-2024-001",
+      "nickname": "Jas",
+      "bday": "2016-04-12",
+      "age": 9,
+      "gradeLevel": "Grade 3",
+      "favoriteSubject": "Science and Nature Studies",
+      "householdChores": "Sweeping the yard and washing dishes after dinner",
+      "siblings": "3 siblings: Carlos (14), Marco (11), and Baby Mia (2)",
+      "fatherNameOccupation": "Eduardo Dela Cruz / Tricycle Driver",
+      "motherNameOccupation": "Maria Dela Cruz / Market Vendor & Laundress",
+      "briefHistoryOfFamily": "The Dela Cruz family was relocated to Cluster 4 after severe monsoon flooding inundated their riverside dwelling in 2023. Eduardo works long hours driving a rented tricycle, while Maria sells vegetables when capital permits. Jasmine is a dedicated student who consistently ranks in the top 5 of her class and dreams of becoming an environmental biologist.",
+      "status": "sponsored",
+      "sponsorName": "Dr. Gregory & Helen Vance",
+      "sponsorCode": "SP-2023-088",
+      "communityCluster": "Brgy. Langkiwa, Binan, Laguna",
+      "consentSigned": true,
+      "medicalOrNutritionNotes": "Normal BMI; completed basic immunization schedule.",
+      "photoUrl": "",
+      "createdAt": "2024-01-15T08:00:00.000Z",
+      "updatedAt": "2024-06-20T10:30:00.000Z"
+    },
+    {
+      "id": "ch-2",
+      "beneficiaryName": "Mateo Gabriel Ramos",
+      "beneficiaryCode": "VIN-CL-2024-002",
+      "nickname": "Gabo",
+      "bday": "2014-09-28",
+      "age": 11,
+      "gradeLevel": "Grade 5",
+      "favoriteSubject": "Mathematics & Chess Club",
+      "householdChores": "Fetching clean water from communal pump and folding laundry",
+      "siblings": "2 siblings: Sofia (13) and Christian (7)",
+      "fatherNameOccupation": "Renato Ramos / Agricultural Day Laborer",
+      "motherNameOccupation": "Annaliza Ramos / Housewife & Weaver",
+      "briefHistoryOfFamily": "The Ramos family resides in an upland farming settlement. Seasonal drought regularly impacts agricultural labor income. Mateo walks 3.5 kilometers each morning to attend the elementary school. He has displayed exceptional aptitude in mental arithmetic and represented his school in district competitions.",
+      "status": "sponsored",
+      "sponsorName": "Grace Fellowship Outreach",
+      "sponsorCode": "SP-2024-014",
+      "communityCluster": "Towerville, San Jose Del Monte Bulacan",
+      "consentSigned": true,
+      "medicalOrNutritionNotes": "Mild asthmatic episodes during cold rainy season; inhaler provided by clinic.",
+      "photoUrl": "",
+      "createdAt": "2024-02-01T09:15:00.000Z",
+      "updatedAt": "2024-07-10T14:20:00.000Z"
+    },
+    {
+      "id": "ch-3",
+      "beneficiaryName": "Kiana Rose Hernandez",
+      "beneficiaryCode": "VIN-CL-2024-003",
+      "nickname": "Kikay",
+      "bday": "2017-11-05",
+      "age": 7,
+      "gradeLevel": "Grade 1",
+      "favoriteSubject": "Art and Storytelling",
+      "householdChores": "Feeding backyard chickens and putting away school supplies",
+      "siblings": "4 siblings: Noel (16), Bea (12), Jericho (9), and Dan (4)",
+      "fatherNameOccupation": "Danilo Hernandez / Construction Helper (Irregular)",
+      "motherNameOccupation": "Rosa Hernandez / Sari-sari Store Helper",
+      "briefHistoryOfFamily": "With five growing children and informal daily wages, the household faces persistent challenges covering school uniforms and learning supplies. Kiana was identified during the EiE school transition monitoring after a recent typhoon damaged their roof. She is eager to learn and loves drawing landscapes.",
+      "status": "available",
+      "communityCluster": "Brgy. Nangka, Marikina",
+      "consentSigned": true,
+      "medicalOrNutritionNotes": "Underweight; enrolled in supplemental weekend nutrition feeding program.",
+      "photoUrl": "",
+      "createdAt": "2024-03-12T11:00:00.000Z",
+      "updatedAt": "2024-08-05T09:00:00.000Z"
+    },
+    {
+      "id": "ch-4",
+      "beneficiaryName": "Joshua Miguel Bautista",
+      "beneficiaryCode": "VIN-CL-2024-004",
+      "nickname": "Josh",
+      "bday": "2013-03-19",
+      "age": 12,
+      "gradeLevel": "Grade 7",
+      "favoriteSubject": "Social Studies & World History",
+      "householdChores": "Washing dishes and helping care for younger brother",
+      "siblings": "1 sibling: Ethan (5)",
+      "fatherNameOccupation": "Deceased",
+      "motherNameOccupation": "Lourdes Bautista / School Canteen Assistant",
+      "briefHistoryOfFamily": "Joshua lost his father to sudden cardiac arrest three years ago. His mother single-handedly supports the small household on minimum daily wages. Despite financial hardships, Joshua maintains high honors and serves as class president.",
+      "status": "available",
+      "communityCluster": "Barugohay, Carigara, Leyte",
+      "consentSigned": true,
+      "medicalOrNutritionNotes": "Healthy, good eyesight.",
+      "photoUrl": "",
+      "createdAt": "2024-03-20T13:45:00.000Z",
+      "updatedAt": "2024-08-11T16:00:00.000Z"
+    },
+    {
+      "id": "ch-5",
+      "beneficiaryName": "Angelica Joyce Mendoza",
+      "beneficiaryCode": "VIN-CL-2024-005",
+      "nickname": "AJ",
+      "bday": "2015-08-14",
+      "age": 10,
+      "gradeLevel": "Grade 4",
+      "favoriteSubject": "English Reading and Spelling",
+      "householdChores": "Mopping floor and helping mother prepare dinner vegetables",
+      "siblings": "2 siblings: Paul (8) and Nicole (6)",
+      "fatherNameOccupation": "Wilfredo Mendoza / Carpenter",
+      "motherNameOccupation": "Maricel Mendoza / Seamstress",
+      "briefHistoryOfFamily": "Both parents are skilled craftsmen whose earnings fluctuate heavily between building contracts. Angelica was awarded best reader in Grade 3 and participates actively in the community library club initiated by Vineyard.",
+      "status": "sponsored",
+      "sponsorName": "Pacific Community Foundation",
+      "sponsorCode": "SP-2023-031",
+      "communityCluster": "Southville, Sta. Rosa Laguna",
+      "consentSigned": true,
+      "medicalOrNutritionNotes": "Normal development; eye checkup scheduled for mild myopia.",
+      "photoUrl": "",
+      "createdAt": "2024-04-05T10:00:00.000Z",
+      "updatedAt": "2024-09-02T11:10:00.000Z"
+    },
+    {
+      "id": "ch-6",
+      "beneficiaryName": "Raphael David Navarro",
+      "beneficiaryCode": "VIN-CL-2024-006",
+      "nickname": "Raphie",
+      "bday": "2018-01-22",
+      "age": 7,
+      "gradeLevel": "Grade 1",
+      "favoriteSubject": "Music and Physical Education",
+      "householdChores": "Arranging shoes and picking up toys with younger cousin",
+      "siblings": "None (Only child in extended household)",
+      "fatherNameOccupation": "Jerome Navarro / Fisherman",
+      "motherNameOccupation": "Cynthia Navarro / Fish Vendor",
+      "briefHistoryOfFamily": "Coastal household vulnerable to rough seas and typhoons during monsoon months. The family participated in the Vineyard emergency cash transfer during the July gale warning. Raphael recently started Grade 1 with full eagerness.",
+      "status": "available",
+      "communityCluster": "Brgy. Langkiwa, Binan, Laguna",
+      "consentSigned": true,
+      "medicalOrNutritionNotes": "Requires dental fluoride checkup; otherwise strong and active.",
+      "photoUrl": "",
+      "createdAt": "2024-04-18T14:30:00.000Z",
+      "updatedAt": "2024-09-15T08:40:00.000Z"
+    }
+  ],
+  "donations": [
+    {
+      "id": "don-1",
+      "receiptNo": "VIN-OR-2024-0101",
+      "donorName": "Dr. Gregory & Helen Vance",
+      "donorCode": "DNR-USA-088",
+      "donorEmail": "greg.vance@vancemed.org",
+      "donorCategory": "individual",
+      "isAnonymous": false,
+      "amount": 18000,
+      "currency": "PHP",
+      "allocationType": "child_sponsorship",
+      "linkedBeneficiaryId": "ch-1",
+      "linkedBeneficiaryName": "Jasmine Alcantara Dela Cruz (VIN-CL-2024-001)",
+      "date": "2024-09-05",
+      "paymentMethod": "bank_transfer",
+      "status": "verified",
+      "notes": "Annual child sponsorship remittance covering tuition subsidies, health checkups, and school uniform kits for Jasmine.",
+      "receivedBy": "Jericho (Project Officer)"
+    },
+    {
+      "id": "don-2",
+      "receiptNo": "VIN-OR-2024-0102",
+      "donorName": "Hope Horizon Humanitarian Aid",
+      "donorCode": "DNR-NGO-104",
+      "donorEmail": "partnerships@hopehorizon.org",
+      "donorCategory": "partner_ngo",
+      "isAnonymous": false,
+      "amount": 250000,
+      "currency": "PHP",
+      "allocationType": "cva_fund",
+      "date": "2024-09-12",
+      "paymentMethod": "bank_transfer",
+      "status": "verified",
+      "notes": "Dedicated grant for Cash & Voucher Assistance (CVA) Cycle 3 targeting 240 typhoon-affected vulnerable families.",
+      "receivedBy": "Jericho (Project Officer)"
+    },
+    {
+      "id": "don-3",
+      "receiptNo": "VIN-OR-2024-0103",
+      "donorName": "Grace Fellowship Outreach",
+      "donorCode": "DNR-REL-014",
+      "donorEmail": "giving@gracefellowship.ph",
+      "donorCategory": "faith_community",
+      "isAnonymous": false,
+      "amount": 15000,
+      "currency": "PHP",
+      "allocationType": "child_sponsorship",
+      "linkedBeneficiaryId": "ch-2",
+      "linkedBeneficiaryName": "Mateo Gabriel Ramos (VIN-CL-2024-002)",
+      "date": "2024-09-18",
+      "paymentMethod": "bank_transfer",
+      "status": "verified",
+      "notes": "Semi-annual sponsorship installment for Mateo Gabriel Ramos for Grade 5 school materials and transportation assistance.",
+      "receivedBy": "Jericho (Project Officer)"
+    },
+    {
+      "id": "don-4",
+      "receiptNo": "VIN-OR-2024-0104",
+      "donorName": "Civic Resilience Guild",
+      "donorCode": "DNR-CORP-052",
+      "donorEmail": "csr@civicguild.com",
+      "donorCategory": "corporate",
+      "isAnonymous": false,
+      "amount": 120000,
+      "currency": "PHP",
+      "allocationType": "eie_fund",
+      "date": "2024-09-25",
+      "paymentMethod": "check",
+      "status": "verified",
+      "notes": "Education in Emergencies (EiE) grant to outfit 2 Temporary Learning Spaces with whiteboards, tarpaulin flooring, and 150 student learning kits.",
+      "receivedBy": "Jericho (Project Officer)"
+    },
+    {
+      "id": "don-5",
+      "receiptNo": "VIN-OR-2024-0105",
+      "donorName": "Anonymous Supporter #12",
+      "donorCode": "DNR-ANON-012",
+      "donorEmail": "confidential@donor.net",
+      "donorCategory": "individual",
+      "isAnonymous": true,
+      "amount": 30000,
+      "currency": "PHP",
+      "allocationType": "general_relief",
+      "date": "2024-10-02",
+      "paymentMethod": "remittance",
+      "status": "verified",
+      "notes": "Unrestricted humanitarian relief contingency reserve.",
+      "receivedBy": "Jericho (Project Officer)"
+    },
+    {
+      "id": "don-6",
+      "receiptNo": "VIN-OR-2024-0106",
+      "donorName": "Pacific Community Foundation",
+      "donorCode": "DNR-FND-031",
+      "donorEmail": "grants@pacificfoundation.org",
+      "donorCategory": "partner_ngo",
+      "isAnonymous": false,
+      "amount": 36000,
+      "currency": "PHP",
+      "allocationType": "child_sponsorship",
+      "linkedBeneficiaryId": "ch-5",
+      "linkedBeneficiaryName": "Angelica Joyce Mendoza (VIN-CL-2024-005)",
+      "date": "2024-10-10",
+      "paymentMethod": "bank_transfer",
+      "status": "verified",
+      "notes": "Direct 2-year educational continuity fund for Angelica Joyce Mendoza.",
+      "receivedBy": "Jericho (Project Officer)"
+    }
+  ],
+  "reports": [
+    {
+      "id": "rep-cva-01",
+      "title": "Emergency Multi-Purpose Cash Transfer: Empowering 240 Farming Households in Barangay Malaya",
+      "slug": "cva-emergency-cash-transfer-malaya",
+      "program": "cva",
+      "date": "2024-09-14",
+      "location": "Barangay Malaya Multi-Purpose Gymnasium, Northern Sector",
+      "officerName": "Jericho",
+      "officerRole": "Project Officer - Humanitarian Relief & CVA",
+      "summary": "A field dispatch documenting the successful rollout of unconditional multipurpose cash assistance (MPCA) to 240 vulnerable agrarian families, restoring household dignity and local market purchasing power after harvest-season crop failure.",
+      "coverImage": "/src/assets/images/cva_cash_distribution_1792381930481.jpg",
+      "metrics": [
+        {
+          "label": "Beneficiary Households",
+          "value": "240",
+          "unit": "families"
+        },
+        {
+          "label": "Cash Transferred",
+          "value": "720,000",
+          "unit": "PHP"
+        },
+        {
+          "label": "Redemption Rate",
+          "value": "100%"
+        },
+        {
+          "label": "Market Sellers Engaged",
+          "value": "18",
+          "unit": "local vendors"
+        }
+      ],
+      "situationOverview": "Following two consecutive tropical depressions that inundated low-lying rice paddies in Northern Sector, smallholder farmers suffered near-total yield loss just weeks before harvest. Standard food ration parcels were insufficient to meet diverse household priorities such as medicine, clean drinking water, and essential school transport for children.",
+      "actionTaken": "Vineyard implemented a 2-day dignified Cash and Voucher Assistance (CVA) distribution at the central barangay hall. Each pre-verified household received PHP 3,000 in unconditional emergency multipurpose cash. The verification process incorporated real-time barcoded tokens, token counters, and a child protection helpdesk to ensure pregnant mothers and elderly caregivers received priority fast-track processing.",
+      "challengesAndAdaptations": "Power outages affected cellular connectivity in the morning; our field enumerators seamlessly transitioned to our offline local tracking records, ensuring zero delays in beneficiary verification. Local retail shopkeepers were oriented in advance to ensure staple supplies (rice, dried fish, salt, infant formula) remained stocked without artificial price inflation.",
+      "communityVoiceQuote": {
+        "quote": "Having cash instead of fixed canned goods allowed me to purchase the specific asthma medication my 8-year-old son desperately needed, plus fresh vegetables for my elderly mother. Vineyard treated us with deep respect.",
+        "author": "Nanay Corazon (47)",
+        "role": "Mother of 4, Farming Household"
+      },
+      "photoGallery": [
+        {
+          "url": "/src/assets/images/cva_cash_distribution_1792381930481.jpg",
+          "caption": "Project Officer verifying beneficiary registration slips with community elders."
+        }
+      ],
+      "tags": [
+        "CVA",
+        "Cash Transfer",
+        "Disaster Response",
+        "Food Security",
+        "Community Engagement"
+      ],
+      "status": "published",
+      "createdAt": "2024-09-15T08:00:00.000Z"
+    },
+    {
+      "id": "rep-eie-02",
+      "title": "Rebuilding Learning Spaces: Education in Emergencies Response for 310 Displaced Children",
+      "slug": "eie-temporary-learning-spaces-response",
+      "program": "eie",
+      "date": "2024-10-04",
+      "location": "Sitio Maligaya Settlement & Bagong Silang Primary School",
+      "officerName": "Jericho",
+      "officerRole": "Project Officer - Education & ChildLink",
+      "summary": "Field dispatch on the establishment of two Temporary Learning Spaces (TLS) and the distribution of comprehensive back-to-learning school kits for children displaced by localized flooding.",
+      "coverImage": "/src/assets/images/eie_temporary_learning_1792381930913.jpg",
+      "metrics": [
+        {
+          "label": "Children Enrolled in TLS",
+          "value": "310",
+          "unit": "learners"
+        },
+        {
+          "label": "Learning Spaces Erected",
+          "value": "2",
+          "unit": "bamboo-timber hubs"
+        },
+        {
+          "label": "Backpack & Stationery Kits",
+          "value": "310",
+          "unit": "kits distributed"
+        },
+        {
+          "label": "Volunteer Teachers Mobilized",
+          "value": "12",
+          "unit": "educators"
+        }
+      ],
+      "situationOverview": "When flash floods damaged five elementary classrooms and swept away family possessions, formal classes were abruptly suspended. Without immediate intervention, children faced prolonged educational disruption, worsening learning regression and psychosocial stress.",
+      "actionTaken": "Within 72 hours of damage assessment, Vineyard collaborated with community parents and local carpenters to construct two well-ventilated, weather-proof Temporary Learning Spaces using treated bamboo, marine plywood, and heat-reflective tarpaulins. Every child was equipped with a sturdy blue waterproof backpack containing notebooks, writing pens, pencils, geometry kits, art supplies, and an emergency solar study lamp.",
+      "challengesAndAdaptations": "Continuous monsoon drizzle threatened materials; our team organized community work-brigades (bayanihan) that erected elevated wooden floor platforms to keep learners dry. Psychosocial support modules and expressive art sessions were integrated into the morning circle to help children process flood trauma before academic instruction.",
+      "communityVoiceQuote": {
+        "quote": "When the floods took our house, I thought my daughter would drop out for the entire school year. Seeing her hold her new backpack and sit with her classmates inside the new learning space gave our whole family renewed hope.",
+        "author": "Tatay Danilo Ramos",
+        "role": "Parent & Community Carpenter"
+      },
+      "photoGallery": [
+        {
+          "url": "/src/assets/images/eie_temporary_learning_1792381930913.jpg",
+          "caption": "Children eagerly participating in morning mathematics instruction inside the newly erected temporary learning center."
+        },
+        {
+          "url": "/src/assets/images/community_learning_supplies_1792381930966.jpg",
+          "caption": "Organized distribution hub with backpacks, solar lamps, and stationery kits prepared for learner intake."
+        }
+      ],
+      "tags": [
+        "EiE",
+        "Child Protection",
+        "Temporary Learning Spaces",
+        "School Supplies",
+        "Psychosocial Support"
+      ],
+      "status": "published",
+      "createdAt": "2024-10-05T09:30:00.000Z"
+    },
+    {
+      "id": "rep-cva-03",
+      "title": "Barangay Health Scorecard: Extended Clinic Hours & Maternal Care Access Dialogue",
+      "slug": "cva-health-scorecard-binan-laguna",
+      "program": "cva",
+      "date": "2024-10-12",
+      "location": "Brgy. Langkiwa, Binan, Laguna",
+      "officerName": "Jericho",
+      "officerRole": "Project Officer - Citizen Voice and Action",
+      "summary": "Community scorecard dialogue with municipal health physicians and Barangay councilors to address pediatric medicine shortages and establish dedicated weekend health consultation days.",
+      "coverImage": "/src/assets/images/cva_cash_distribution_1792381930481.jpg",
+      "metrics": [
+        { "label": "Participating Parents", "value": "185", "unit": "caregivers" },
+        { "label": "RHU Clinic Score", "value": "88%", "unit": "satisfaction" },
+        { "label": "Medicine Restock Days", "value": "3x", "unit": "weekly deliveries" },
+        { "label": "Action Items Signed", "value": "8", "unit": "resolutions" }
+      ],
+      "situationOverview": "Working parents in Langkiwa reported arriving at the rural health unit only to find immunization queues capped early. CVA facilitation enabled structured assessment against DOH primary care benchmarks.",
+      "actionTaken": "Facilitators conducted four focus groups followed by an open multi-stakeholder interface session with local health committee chairs and barangay captains, establishing weekend vaccination hours.",
+      "challengesAndAdaptations": "Scheduling conflicts with shift workers were mitigated by hosting evening validation sessions at the community chapel courtyard.",
+      "communityVoiceQuote": {
+        "quote": "We no longer have to take unpaid leave from factory shifts just to have our toddlers weighed and immunized. The new Saturday clinic schedule is a blessing.",
+        "author": "Maricel Alcantara (34)",
+        "role": "Parent Representative"
+      },
+      "photoGallery": [
+        {
+          "url": "/src/assets/images/cva_cash_distribution_1792381930481.jpg",
+          "caption": "Langkiwa community leaders presenting health service scorecards to barangay council officials."
+        }
+      ],
+      "tags": ["CVA", "Maternal Health", "Scorecard", "Citizen Engagement", "Local Governance"],
+      "status": "published",
+      "createdAt": "2024-10-12T10:00:00.000Z"
+    },
+    {
+      "id": "rep-eie-04",
+      "title": "Classroom Continuity Kits & Solar Study Lamps for 190 Flood-Prone Households",
+      "slug": "eie-flood-preparedness-laguna",
+      "program": "eie",
+      "date": "2024-10-15",
+      "location": "Brgy. Langkiwa, Binan, Laguna",
+      "officerName": "Jericho",
+      "officerRole": "Project Officer - Education & ChildLink",
+      "summary": "Distribution of rugged waterproof learning satchels, rechargeable solar study lamps, and home study activity workbooks for elementary learners residing near the Laguna de Bay lowlands.",
+      "coverImage": "/src/assets/images/community_learning_supplies_1792381930966.jpg",
+      "metrics": [
+        { "label": "Learners Equipped", "value": "190", "unit": "pupils" },
+        { "label": "Solar Study Lamps", "value": "190", "unit": "units" },
+        { "label": "Teacher Kits Provided", "value": "14", "unit": "modular packs" },
+        { "label": "Home Learning Plans", "value": "100%", "unit": "adopted" }
+      ],
+      "situationOverview": "During high tide surges and torrential monsoon periods, localized power outages frequently interrupt evening home studies for young children in coastal clusters.",
+      "actionTaken": "In coordination with primary school teachers, our team delivered solar study lamps and waterproof document satchels to prevent learning material loss during flash flood alerts.",
+      "challengesAndAdaptations": "Ensured durable packaging and conducted quick parent orientations on battery maintenance and solar charging placement.",
+      "communityVoiceQuote": {
+        "quote": "Even when power goes out during heavy downpours, my son can finish his mathematics homework under his solar lamp without resorting to hazardous kerosene candles.",
+        "author": "Eduardo Dela Cruz",
+        "role": "Community Parent & Driver"
+      },
+      "photoGallery": [
+        {
+          "url": "/src/assets/images/community_learning_supplies_1792381930966.jpg",
+          "caption": "Distribution of classroom continuity packs and solar study lamps to elementary school pupils."
+        }
+      ],
+      "tags": ["EiE", "Disaster Preparedness", "Solar Lamps", "Education Continuity", "Laguna"],
+      "status": "published",
+      "createdAt": "2024-10-15T11:00:00.000Z"
+    },
+    {
+      "id": "rep-cva-05",
+      "title": "Citizen Action Interface: Coastal Disaster Evacuation & Child Safeguarding Protocols",
+      "slug": "cva-coastal-resilience-leyte",
+      "program": "cva",
+      "date": "2024-10-17",
+      "location": "Barugohay, Carigara, Leyte",
+      "officerName": "Jericho",
+      "officerRole": "Project Officer - Citizen Voice and Action",
+      "summary": "Multi-sector community dialogue establishing child-friendly spaces inside designated municipal storm shelters and standardizing family emergency reuniting protocols.",
+      "coverImage": "/src/assets/images/cva_cash_distribution_1792381930481.jpg",
+      "metrics": [
+        { "label": "Fisherfolk Families", "value": "140", "unit": "households" },
+        { "label": "Shelter Protocols", "value": "3", "unit": "designated hubs" },
+        { "label": "Child Protection Desks", "value": "100%", "unit": "operational" },
+        { "label": "Civic Volunteers", "value": "25", "unit": "mobilized" }
+      ],
+      "situationOverview": "Typhoon warning bulletins require swift evacuation for coastal households. Community feedback highlighted the need for private nursing zones and secure child registration inside emergency centers.",
+      "actionTaken": "Held CVA interface meeting with the Municipal Disaster Risk Reduction Management Office (MDRRMO) and social workers, adopting standardized child-friendly shelter guidelines.",
+      "challengesAndAdaptations": "Simulated mock evacuation drill with parents to verify that child emergency identification cards were easily legible and waterproofed.",
+      "communityVoiceQuote": {
+        "quote": "When typhoons strike, knowing where my children will be safely registered and sheltered brings our whole barangay tremendous peace of mind.",
+        "author": "Nanay Cynthia Navarro",
+        "role": "Fisherfolk Family Representative"
+      },
+      "photoGallery": [
+        {
+          "url": "/src/assets/images/cva_cash_distribution_1792381930481.jpg",
+          "caption": "Carigara community members reviewing disaster shelter child safeguarding standard scorecards."
+        }
+      ],
+      "tags": ["CVA", "Disaster Resilience", "Evacuation Centers", "Child Protection", "Leyte"],
+      "status": "published",
+      "createdAt": "2024-10-17T08:30:00.000Z"
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "log-1",
+      "timestamp": "2024-10-18T08:00:00.000Z",
+      "action": "security_login",
+      "details": "Project Officer initialized local server masterlist file storage.",
+      "officer": "Jericho (Project Officer)"
+    }
+  ]
+}
