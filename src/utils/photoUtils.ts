@@ -76,7 +76,35 @@ export function sanitizeImageUrl(input: string): string {
   if (!isSafeImageUrl(trimmed)) {
     return '';
   }
-  return trimmed;
+
+  const lower = trimmed.toLowerCase();
+
+  // Keep already-validated raster data URLs as-is
+  if (lower.startsWith('data:')) {
+    return trimmed;
+  }
+
+  // Normalize safe relative URLs and reject suspicious characters
+  if (trimmed.startsWith('/') || trimmed.startsWith('./')) {
+    if (
+      trimmed.startsWith('//') ||
+      /[\u0000-\u001F\u007F<>"']/.test(trimmed)
+    ) {
+      return '';
+    }
+    return encodeURI(trimmed);
+  }
+
+  // Normalize absolute URLs through URL parsing and strict protocol allowlist
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+      return '';
+    }
+    return parsed.toString();
+  } catch {
+    return '';
+  }
 }
 
 export function normalizePhotoUrl(input: string): string {
