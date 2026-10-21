@@ -816,7 +816,7 @@ app.get('/api/logo-status', (req, res) => {
 async function startServer() {
   if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.resolve(process.cwd(), 'dist')));
-    app.get('*', (req, res) => {
+    app.get('*', apiLimiter, (req, res) => {
       res.sendFile(path.resolve(process.cwd(), 'dist', 'index.html'));
     });
   } else {
