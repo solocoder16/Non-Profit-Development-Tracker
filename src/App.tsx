@@ -163,7 +163,11 @@ export default function App() {
   const handleSaveProfile = (updated: OfficerProfile) => {
     setOfficerProfile(updated);
     try {
-      localStorage.setItem('ngo_officer_profile', JSON.stringify(updated));
+      const persistedProfile = {
+        name: updated.name,
+        position: updated.position,
+      };
+      localStorage.setItem('ngo_officer_profile', JSON.stringify(persistedProfile));
     } catch (e) {}
     handleLogAudit('update_child', `Updated officer profile: ${updated.name} (${updated.position})`);
   };
@@ -177,7 +181,11 @@ export default function App() {
     };
     setOfficerProfile(updatedProfile);
     try {
-      localStorage.setItem('ngo_officer_profile', JSON.stringify(updatedProfile));
+      const persistedProfile = {
+        name: updatedProfile.name,
+        position: updatedProfile.position,
+      };
+      localStorage.setItem('ngo_officer_profile', JSON.stringify(persistedProfile));
       localStorage.setItem('ngo_officer_logged_in', 'true');
     } catch (e) {}
     setIsLoggedIn(true);
