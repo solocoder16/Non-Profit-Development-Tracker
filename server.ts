@@ -583,7 +583,7 @@ if (!fs.existsSync(LOCAL_FALLBACK_FILE)) {
 }
 
 // Storage Location & Diagnostic API
-app.get('/api/storage-info', (req, res) => {
+app.get('/api/storage-info', apiLimiter, (req, res) => {
   try {
     const activeFile = resolveActiveDataFile();
     const stats = fs.existsSync(activeFile) ? fs.statSync(activeFile) : fs.statSync(LOCAL_FALLBACK_FILE);
